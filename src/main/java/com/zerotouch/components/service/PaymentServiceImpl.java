@@ -156,7 +156,7 @@ public class PaymentServiceImpl extends SuperServiceImpl implements IPaymentServ
 							initiatePaymentResponse.setTrustyMerchant(true);
 							initiatePaymentResponse.setUserDeviceId(customer.getDeviceId());
 							initiatePaymentResponse.setPaymentDone(true);
-							initiatePaymentResponse.setResponseMessage("Payment Done");
+							initiatePaymentResponse.setResponseMessage("Payment Done.");
 						}
 						else {
 							initiatePaymentResponse.setAmountInRange(false);
