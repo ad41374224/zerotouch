@@ -154,7 +154,7 @@ public class UserRegisterController {
 		return webServiceResponseModel;
 	}
 	
-	@PutMapping(value = "/updateNFCTagData")
+	@PostMapping(value = "/updateNFCTagData")
 	@ResponseBody
 	public WebServiceResponseModel updateNFCTagData(@RequestBody NFCTagDataModel NFCTagDataModel) {
 		if(UtilMethods.validateMobileNo(NFCTagDataModel.getCustMobileNumber()) && NFCTagDataModel.getNfcTagData() != null && !NFCTagDataModel.getNfcTagData().equals("")) {
