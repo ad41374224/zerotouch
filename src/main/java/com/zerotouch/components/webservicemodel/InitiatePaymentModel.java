@@ -7,6 +7,9 @@ public class InitiatePaymentModel extends SuperBean {
 	private int merchantId;
 	private long custMobileNumber;
 	private float amount;
+	private String custNFCData;
+	private boolean isAmountUnderPwdFreeLimit;
+	private String custNFCPassword;
 	
 	public int getMerchantId() {
 		return merchantId;
@@ -25,6 +28,24 @@ public class InitiatePaymentModel extends SuperBean {
 	}
 	public void setAmount(float amount) {
 		this.amount = amount;
+	}
+	public String getCustNFCData() {
+		return custNFCData;
+	}
+	public void setCustNFCData(String custNFCData) {
+		this.custNFCData = custNFCData;
+	}
+	public String getCustNFCPassword() {
+		return custNFCPassword;
+	}
+	public void setCustNFCPassword(String custNFCPassword) {
+		this.custNFCPassword = custNFCPassword;
+	}
+	public boolean isAmountUnderPwdFreeLimit() {
+		return isAmountUnderPwdFreeLimit;
+	}
+	public void setAmountUnderPwdFreeLimit(boolean isAmountUnderPwdFreeLimit) {
+		this.isAmountUnderPwdFreeLimit = isAmountUnderPwdFreeLimit;
 	}
 	
 }

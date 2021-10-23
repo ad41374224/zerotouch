@@ -6,10 +6,15 @@ public class InitiatePaymentResponseModel extends SuperBean {
 
 	private String responseMessage;
 	private String userDeviceId;
+	private String custNFTagCData;
 	private boolean amountInRange;
+	private boolean isAmountUnderPwdFreeLimit;
+	private String custNFCPassword;
+	private int nfcPwdFreeLimit;
 	private boolean trustyMerchant;
 	private boolean sufficientBalance;
 	private boolean isPaymentDone;
+	private boolean isPasswordCorrect;
 	
 	public String getResponseMessage() {
 		return responseMessage;
@@ -47,6 +52,35 @@ public class InitiatePaymentResponseModel extends SuperBean {
 	public void setPaymentDone(boolean isPaymentDone) {
 		this.isPaymentDone = isPaymentDone;
 	}
-	
+	public boolean isAmountUnderPwdFreeLimit() {
+		return isAmountUnderPwdFreeLimit;
+	}
+	public void setAmountUnderPwdFreeLimit(boolean isAmountUnderPwdFreeLimit) {
+		this.isAmountUnderPwdFreeLimit = isAmountUnderPwdFreeLimit;
+	}
+	public String getCustNFTagCData() {
+		return custNFTagCData;
+	}
+	public void setCustNFTagCData(String custNFTagCData) {
+		this.custNFTagCData = custNFTagCData;
+	}
+	public int getNfcPwdFreeLimit() {
+		return nfcPwdFreeLimit;
+	}
+	public void setNfcPwdFreeLimit(int nfcPwdFreeLimit) {
+		this.nfcPwdFreeLimit = nfcPwdFreeLimit;
+	}
+	public String getCustNFCPassword() {
+		return custNFCPassword;
+	}
+	public void setCustNFCPassword(String custNFCPassword) {
+		this.custNFCPassword = custNFCPassword;
+	}
+	public boolean isPasswordCorrect() {
+		return isPasswordCorrect;
+	}
+	public void setPasswordCorrect(boolean isPasswordCorrect) {
+		this.isPasswordCorrect = isPasswordCorrect;
+	}
 	
 }

@@ -23,6 +23,7 @@ import com.zerotouch.JpaRepositories.repo.UserRepositiory;
 import com.zerotouch.JpaRepositories.repo.UserWalletRepositiory;
 import com.zerotouch.components.webservicemodel.LoginModel;
 import com.zerotouch.components.webservicemodel.LoginResponseModel;
+import com.zerotouch.components.webservicemodel.NFCTagDataModel;
 import com.zerotouch.components.webservicemodel.TrustyCustomerResponseModel;
 import com.zerotouch.util.UtilMethods;
 import com.zerotouch.util.ZeroTouchConstants;
@@ -323,6 +324,17 @@ public class UserRegisterServiceImpl extends SuperServiceImpl implements UserReg
 			userAddressDB.setStreetBlockNo(userAddress.getStreetBlockNo());
 		}
 		userAddressDB.setUpdatedOn(new Date());
+	}
+	
+	public User updateNFCData(NFCTagDataModel NFCTagDataModel) {
+		User user = getUserDetailsByMobNo(NFCTagDataModel.getCustMobileNumber());
+		if(user!=null) {
+			user.setNfcTagData(NFCTagDataModel.getNfcTagData());
+			return userRepositiory.save(user);
+		} else {
+			return null;
+		}
+		
 	}
 }
 

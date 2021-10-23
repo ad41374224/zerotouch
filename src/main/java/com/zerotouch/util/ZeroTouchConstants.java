@@ -22,4 +22,10 @@ public class ZeroTouchConstants {
 	
 	public static final String RESPONSE_CODE_DATA_ALREADY_EXISTS = "1002";
 	public static final String RESPONSE_MESSAGE_DATA_ALREADY_EXISTS = "Data already exits";
+	
+	public static final String RESPONSE_CODE_INCORRECT_PASSWORD = "1003";
+	public static final String RESPONSE_MESSAGE_INCORRECT_PASSWORD = "Password Incorrect";
+	
+	public static final String RESPONSE_CODE_INSUFFICIENT_BALANCE = "1004";
+	public static final String RESPONSE_MESSAGE_INSUFFICIENT_BALANCE = "Insufficient Balance";
 }

@@ -31,7 +31,7 @@ public class PaymentController {
 	@PostMapping(value = "/initiatePayment")
 	@ResponseBody
 	public WebServiceResponseModel initiatePayment(@RequestBody InitiatePaymentModel initiatePayment) {
-		if(paymentService.validayeInitiatePaymentRequest(initiatePayment)) {
+		if(paymentService.validateInitiatePaymentRequest(initiatePayment)) {
 			InitiatePaymentResponseModel initiatePaymentResponse = paymentService.initiatePayment(initiatePayment);
 			if (initiatePaymentResponse.isAmountInRange()
 					&& initiatePaymentResponse.isSufficientBalance()
@@ -48,10 +48,28 @@ public class PaymentController {
 		return webServiceResponseModel;
 	}
 	
+	@PostMapping(value = "/initiatePaymentViaNFC")
+	@ResponseBody
+	public WebServiceResponseModel initiatePaymentViaNFC(@RequestBody InitiatePaymentModel initiatePayment) {
+		if(paymentService.validateInitiateNFCPaymentRequest(initiatePayment)) {
+			InitiatePaymentResponseModel initiatePaymentResponse = paymentService.initiateNFCPayment(initiatePayment);
+			if (initiatePaymentResponse.isSufficientBalance()) {
+				webServiceResponseModel = paymentService.setResponseOK(initiatePaymentResponse);
+			}
+			else {
+				webServiceResponseModel = paymentService.setResponseInvalidRequest(initiatePaymentResponse);
+			}
+		}
+		else {
+			webServiceResponseModel = paymentService.setResponseInvalidRequest(initiatePayment);
+		}
+		return webServiceResponseModel;
+	}
+	
 	@PostMapping(value = "/deductamount")
 	@ResponseBody
 	public WebServiceResponseModel deductAmount(@RequestBody InitiatePaymentModel initiatePayment) {
-		if(paymentService.validayeInitiatePaymentRequest(initiatePayment)) {
+		if(paymentService.validateInitiatePaymentRequest(initiatePayment)) {
 			InitiatePaymentResponseModel initiatePaymentResponse = paymentService.deductAmount(initiatePayment);
 			if (initiatePaymentResponse.isAmountInRange()
 					&& initiatePaymentResponse.isSufficientBalance()
@@ -63,6 +81,26 @@ public class PaymentController {
 			}
 		}
 		else {
+			webServiceResponseModel = paymentService.setResponseInvalidRequest(initiatePayment);
+		}
+		return webServiceResponseModel;
+	}
+	
+	@PostMapping(value = "/deductNFCAmount")
+	@ResponseBody
+	public WebServiceResponseModel deductNFCAmount(@RequestBody InitiatePaymentModel initiatePayment) {
+		if(paymentService.validateInitiatePaymentRequest(initiatePayment)) {
+			InitiatePaymentResponseModel initiatePaymentResponse = paymentService.deductNFCAmount(initiatePayment);
+			if (initiatePaymentResponse.isPaymentDone()) {
+				webServiceResponseModel = paymentService.setResponseOK(initiatePaymentResponse);
+			}else if (!initiatePaymentResponse.isPasswordCorrect()) {
+				webServiceResponseModel = paymentService.setResponseInvalidPassword(initiatePaymentResponse);
+			}else if(!initiatePaymentResponse.isSufficientBalance()) {
+				webServiceResponseModel = paymentService.setResponseInsufficientBalance(initiatePaymentResponse);
+			}else {
+				webServiceResponseModel = paymentService.setResponseInvalidRequest(initiatePayment);
+			}
+		}else {
 			webServiceResponseModel = paymentService.setResponseInvalidRequest(initiatePayment);
 		}
 		return webServiceResponseModel;

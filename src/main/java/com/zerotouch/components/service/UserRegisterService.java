@@ -8,6 +8,7 @@ import com.zerotouch.EntityScan.bean.User;
 import com.zerotouch.EntityScan.bean.UserLogin;
 import com.zerotouch.components.webservicemodel.LoginModel;
 import com.zerotouch.components.webservicemodel.LoginResponseModel;
+import com.zerotouch.components.webservicemodel.NFCTagDataModel;
 import com.zerotouch.components.webservicemodel.TrustyCustomerResponseModel;
 
 public interface UserRegisterService extends SuperService {
@@ -33,5 +34,7 @@ public interface UserRegisterService extends SuperService {
 	public LoginResponseModel login(LoginModel loginModel);
 	
 	public UserLogin updateUser(UserLogin userLogin);
+	
+	public User updateNFCData(NFCTagDataModel NFCTagDataModel);
 	
 }

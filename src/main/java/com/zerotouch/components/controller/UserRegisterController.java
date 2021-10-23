@@ -18,6 +18,7 @@ import com.zerotouch.JpaRepositories.repo.UserAddressRepository;
 import com.zerotouch.components.service.UserRegisterService;
 import com.zerotouch.components.webservicemodel.LoginModel;
 import com.zerotouch.components.webservicemodel.LoginResponseModel;
+import com.zerotouch.components.webservicemodel.NFCTagDataModel;
 import com.zerotouch.components.webservicemodel.TrustyCustomerResponseModel;
 import com.zerotouch.components.webservicemodel.WebServiceResponseModel;
 import com.zerotouch.util.UtilMethods;
@@ -149,6 +150,22 @@ public class UserRegisterController {
 			}
 		}else {
 			webServiceResponseModel = userRegisterService.setResponseInvalidRequest(userLogin);
+		}
+		return webServiceResponseModel;
+	}
+	
+	@PutMapping(value = "/updateNFCTagData")
+	@ResponseBody
+	public WebServiceResponseModel updateNFCTagData(@RequestBody NFCTagDataModel NFCTagDataModel) {
+		if(UtilMethods.validateMobileNo(NFCTagDataModel.getCustMobileNumber()) && NFCTagDataModel.getNfcTagData() != null && !NFCTagDataModel.getNfcTagData().equals("")) {
+			User user = userRegisterService.updateNFCData(NFCTagDataModel);
+			if(user != null) {
+				webServiceResponseModel = userRegisterService.setResponseOK(user);
+			} else {
+				webServiceResponseModel = userRegisterService.setResponseDataNotFound(NFCTagDataModel);
+			}
+		}else {
+			webServiceResponseModel = userRegisterService.setResponseInvalidRequest(NFCTagDataModel);
 		}
 		return webServiceResponseModel;
 	}

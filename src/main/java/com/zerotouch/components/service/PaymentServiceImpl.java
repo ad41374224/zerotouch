@@ -48,9 +48,20 @@ public class PaymentServiceImpl extends SuperServiceImpl implements IPaymentServ
 	@Autowired
 	private UserWalletRepositiory userWalletRepositiory;
 	
-	public boolean validayeInitiatePaymentRequest(InitiatePaymentModel initiatePaymentModel) {
+	public boolean validateInitiatePaymentRequest(InitiatePaymentModel initiatePaymentModel) {
 		try {
 			if(UtilMethods.validateMobileNo(initiatePaymentModel.getCustMobileNumber()) && initiatePaymentModel.getAmount()> 0.0 && initiatePaymentModel.getMerchantId() > 0){
+				return true;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean validateInitiateNFCPaymentRequest(InitiatePaymentModel initiatePaymentModel) {
+		try {
+			if(UtilMethods.validateMobileNo(initiatePaymentModel.getCustMobileNumber()) && initiatePaymentModel.getAmount()> 0.0 && initiatePaymentModel.getMerchantId() > 0 && initiatePaymentModel.getCustNFCData() !=null && !initiatePaymentModel.getCustNFCData().equals("")){
 				return true;
 			}
 		}catch (Exception e) {
@@ -97,6 +108,38 @@ public class PaymentServiceImpl extends SuperServiceImpl implements IPaymentServ
 					initiatePaymentResponse.setTrustyMerchant(false);
 					initiatePaymentResponse.setResponseMessage("Merchant is not trusted.");
 				}
+			}
+			else {
+				initiatePaymentResponse.setResponseMessage("Insufficient Balance.");
+				initiatePaymentResponse.setSufficientBalance(false);
+			}
+		}
+		else {
+			initiatePaymentResponse.setResponseMessage("Customer/Merchant information is not correct.");
+		}
+		return initiatePaymentResponse;
+	}
+	
+	@Override
+	public InitiatePaymentResponseModel initiateNFCPayment(InitiatePaymentModel initiatePayment) {
+		InitiatePaymentResponseModel initiatePaymentResponse = new InitiatePaymentResponseModel();
+		List<User> customers = userRepositiory.findByMobileNo(initiatePayment.getCustMobileNumber());
+		Optional<User> merchant = userRepositiory.findById(initiatePayment.getMerchantId());
+			
+		if (customers != null && customers.size() == 1 && customers.get(0).getUserType().equalsIgnoreCase("Customer")
+				&& merchant.isPresent() && merchant.get().getUserType().equalsIgnoreCase("Merchant")) {
+			User customer = customers.get(0);
+			if (customer.getUserWallet() != null
+					&& customer.getUserWallet().getBalance() >= initiatePayment.getAmount()) {
+				initiatePaymentResponse.setAmountInRange(true);
+				initiatePaymentResponse.setSufficientBalance(true);
+				initiatePaymentResponse.setTrustyMerchant(true);
+				initiatePaymentResponse.setUserDeviceId(customer.getDeviceId());
+				initiatePaymentResponse.setCustNFTagCData(customer.getNfcTagData());
+				initiatePaymentResponse.setNfcPwdFreeLimit(customer.getNfcPwdFreeLimit());
+				initiatePaymentResponse.setCustNFCPassword(customer.getNfcPassword());
+				initiatePaymentResponse.setAmountUnderPwdFreeLimit(initiatePayment.getAmount()<=customer.getNfcPwdFreeLimit()? true: false);
+				initiatePaymentResponse.setResponseMessage("All good to initate payment");	
 			}
 			else {
 				initiatePaymentResponse.setResponseMessage("Insufficient Balance.");
@@ -180,6 +223,63 @@ public class PaymentServiceImpl extends SuperServiceImpl implements IPaymentServ
 		}
 		else {
 			initiatePaymentResponse.setResponseMessage("Customer/Merchant information is not correct.");
+		}
+		return initiatePaymentResponse;
+	}
+	
+	@Override
+	@Transactional
+	public InitiatePaymentResponseModel deductNFCAmount(InitiatePaymentModel initiatePayment) {
+		InitiatePaymentResponseModel initiatePaymentResponse = new InitiatePaymentResponseModel();
+		List<User> customers = userRepositiory.findByMobileNo(initiatePayment.getCustMobileNumber());
+		Optional<User> merchant = userRepositiory.findById(initiatePayment.getMerchantId());
+			
+		if (customers != null && customers.size() == 1 && customers.get(0).getUserType().equalsIgnoreCase("Customer")
+				&& merchant.isPresent() && merchant.get().getUserType().equalsIgnoreCase("Merchant")) {
+			User customer = customers.get(0);
+			if (customer.getUserWallet() != null && customer.getUserWallet().getBalance() >= initiatePayment.getAmount()) {
+				initiatePaymentResponse.setSufficientBalance(true);
+				if(initiatePayment.isAmountUnderPwdFreeLimit() || (!initiatePayment.isAmountUnderPwdFreeLimit() && initiatePayment.getCustNFCPassword()!= null && initiatePayment.getCustNFCPassword().equals(customer.getNfcPassword())) ) { 
+					User merchatToAdd = merchant.get();
+					customer.getUserWallet().setBalance(customer.getUserWallet().getBalance()-initiatePayment.getAmount());
+					customer.getUserWallet().setUpdatedOn(new Date());
+					merchatToAdd.getUserWallet().setBalance(merchatToAdd.getUserWallet().getBalance()+initiatePayment.getAmount());
+					merchatToAdd.getUserWallet().setUpdatedOn(new Date());
+					
+					userRepositiory.save(customer);
+					userRepositiory.save(merchatToAdd);
+					
+					Transaction transaction = new Transaction();
+					
+					transaction.setComment("Transaction initiated by " + merchatToAdd.getFirstName() + merchatToAdd.getLastName());
+					transaction.setCreatedOn(new Date());
+					transaction.setTransactionAmount(initiatePayment.getAmount());
+					transaction.setTransactionRefNumber(UUID.randomUUID().toString());
+					transaction.setTransactionType('D');
+					transaction.setUserId(customer.getId());
+					transaction.setMerchantId(merchatToAdd.getId());
+					
+					transactionRepository.save(transaction);
+					
+					initiatePaymentResponse.setAmountInRange(true);
+					initiatePaymentResponse.setSufficientBalance(true);
+					initiatePaymentResponse.setTrustyMerchant(true);
+					initiatePaymentResponse.setUserDeviceId(customer.getDeviceId());
+					initiatePaymentResponse.setPaymentDone(true);
+					initiatePaymentResponse.setResponseMessage("Payment Done.");
+				}else {
+					initiatePaymentResponse.setResponseMessage("Incorrect Password");
+					initiatePaymentResponse.setPaymentDone(false);
+					initiatePaymentResponse.setPasswordCorrect(false);
+				}
+			}else {
+				initiatePaymentResponse.setResponseMessage("Insufficient Balance.");
+				initiatePaymentResponse.setSufficientBalance(false);
+				initiatePaymentResponse.setPaymentDone(false);
+			}
+		}else {
+			initiatePaymentResponse.setResponseMessage("Customer/Merchant information is not correct.");
+			initiatePaymentResponse.setPaymentDone(false);
 		}
 		return initiatePaymentResponse;
 	}

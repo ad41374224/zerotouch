@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 
+import org.hibernate.annotations.ColumnDefault;
+
 @Entity(name = "All_User")
 public class User extends SuperBean {
 
@@ -60,6 +62,16 @@ public class User extends SuperBean {
 
 	@Column(name = "mcht_reg_no")
 	private String merchantRegNo;
+	
+	@Column(name = "nfctagdata")
+	private String nfcTagData;
+	
+	@ColumnDefault("2000")
+	@Column(name = "nfc_pwd_free_limit", nullable = false)
+	private int nfcPwdFreeLimit;
+	
+	@Column(name = "nfc_password")
+	private String nfcPassword;
 	
 	public User() {
 		
@@ -175,6 +187,30 @@ public class User extends SuperBean {
 
 	public void setUserWallet(UserWallet userWallet) {
 		this.userWallet = userWallet;
+	}
+
+	public String getNfcTagData() {
+		return nfcTagData;
+	}
+
+	public void setNfcTagData(String nfcTagData) {
+		this.nfcTagData = nfcTagData;
+	}
+
+	public int getNfcPwdFreeLimit() {
+		return nfcPwdFreeLimit;
+	}
+
+	public void setNfcPwdFreeLimit(int nfcPwdFreeLimit) {
+		this.nfcPwdFreeLimit = nfcPwdFreeLimit;
+	}
+
+	public String getNfcPassword() {
+		return nfcPassword;
+	}
+
+	public void setNfcPassword(String nfcPassword) {
+		this.nfcPassword = nfcPassword;
 	}
 	
 }

@@ -34,6 +34,20 @@ public class SuperServiceImpl implements SuperService {
 		return webServiceResponseModel;
 	}
 	
+	public WebServiceResponseModel setResponseInvalidPassword(SuperBean superbean) {
+		webServiceResponseModel.setResponseCode(ZeroTouchConstants.RESPONSE_CODE_INCORRECT_PASSWORD);
+		webServiceResponseModel.setResponseMessage(ZeroTouchConstants.RESPONSE_MESSAGE_INCORRECT_PASSWORD);
+		webServiceResponseModel.setSuperBean(superbean);
+		return webServiceResponseModel;
+	}
+	
+	public WebServiceResponseModel setResponseInsufficientBalance(SuperBean superbean) {
+		webServiceResponseModel.setResponseCode(ZeroTouchConstants.RESPONSE_CODE_INCORRECT_PASSWORD);
+		webServiceResponseModel.setResponseMessage(ZeroTouchConstants.RESPONSE_MESSAGE_INCORRECT_PASSWORD);
+		webServiceResponseModel.setSuperBean(superbean);
+		return webServiceResponseModel;
+	}
+	
 	public WebServiceResponseModel setResponseDataAlreadyExists(SuperBean superbean) {
 		webServiceResponseModel.setResponseCode(ZeroTouchConstants.RESPONSE_CODE_DATA_ALREADY_EXISTS);
 		webServiceResponseModel.setResponseMessage(ZeroTouchConstants.RESPONSE_MESSAGE_DATA_ALREADY_EXISTS);

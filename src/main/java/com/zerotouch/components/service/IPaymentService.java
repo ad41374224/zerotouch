@@ -8,13 +8,19 @@ import com.zerotouch.components.webservicemodel.InitiatePaymentResponseModel;
 
 public interface IPaymentService extends SuperService {
 	
-	public boolean validayeInitiatePaymentRequest(InitiatePaymentModel initiatePaymentModel);
+	public boolean validateInitiatePaymentRequest(InitiatePaymentModel initiatePaymentModel);
+	
+	public boolean validateInitiateNFCPaymentRequest(InitiatePaymentModel initiatePaymentModel);
 
 	public InitiatePaymentResponseModel initiatePayment(InitiatePaymentModel initiatePayment);
+	
+	public InitiatePaymentResponseModel initiateNFCPayment(InitiatePaymentModel initiatePayment);
 	
 	public AddMoneyResponseModel addMoney(AddMoneyModel addMoney);
 	
 	public GetTransactionsResponseModel getTransactions(int userId, int pageNo, int pageSize);
 	
 	public InitiatePaymentResponseModel deductAmount(InitiatePaymentModel initiatePayment);
+	
+	public InitiatePaymentResponseModel deductNFCAmount(InitiatePaymentModel initiatePayment);
 }
