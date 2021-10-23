@@ -48,6 +48,17 @@ public class PaymentServiceImpl extends SuperServiceImpl implements IPaymentServ
 	@Autowired
 	private UserWalletRepositiory userWalletRepositiory;
 	
+	public boolean validateInitiatePaymentNFCRequest(InitiatePaymentModel initiatePaymentModel) {
+		try {
+			if(initiatePaymentModel.getAmount()> 0.0 && initiatePaymentModel.getMerchantId() > 0){
+				return true;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public boolean validateInitiatePaymentRequest(InitiatePaymentModel initiatePaymentModel) {
 		try {
 			if(UtilMethods.validateMobileNo(initiatePaymentModel.getCustMobileNumber()) && initiatePaymentModel.getAmount()> 0.0 && initiatePaymentModel.getMerchantId() > 0){
@@ -231,7 +242,7 @@ public class PaymentServiceImpl extends SuperServiceImpl implements IPaymentServ
 	@Transactional
 	public InitiatePaymentResponseModel deductNFCAmount(InitiatePaymentModel initiatePayment) {
 		InitiatePaymentResponseModel initiatePaymentResponse = new InitiatePaymentResponseModel();
-		List<User> customers = userRepositiory.findByMobileNo(initiatePayment.getCustMobileNumber());
+		List<User> customers = userRepositiory.findByNfcTagData(initiatePayment.getCustNFCData());
 		Optional<User> merchant = userRepositiory.findById(initiatePayment.getMerchantId());
 			
 		if (customers != null && customers.size() == 1 && customers.get(0).getUserType().equalsIgnoreCase("Customer")

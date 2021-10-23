@@ -18,5 +18,4 @@ public class UtilMethods {
 		return false;
 	}
 	
-	
 }

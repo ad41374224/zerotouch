@@ -89,7 +89,7 @@ public class PaymentController {
 	@PostMapping(value = "/deductNFCAmount")
 	@ResponseBody
 	public WebServiceResponseModel deductNFCAmount(@RequestBody InitiatePaymentModel initiatePayment) {
-		if(paymentService.validateInitiatePaymentRequest(initiatePayment)) {
+		if(paymentService.validateInitiatePaymentNFCRequest(initiatePayment)) {
 			InitiatePaymentResponseModel initiatePaymentResponse = paymentService.deductNFCAmount(initiatePayment);
 			if (initiatePaymentResponse.isPaymentDone()) {
 				webServiceResponseModel = paymentService.setResponseOK(initiatePaymentResponse);

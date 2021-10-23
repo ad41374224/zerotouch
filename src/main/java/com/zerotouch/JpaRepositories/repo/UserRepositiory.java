@@ -10,4 +10,7 @@ import com.zerotouch.EntityScan.bean.User;
 public interface UserRepositiory extends JpaRepository<User, Integer> {
 
 	public List<User> findByMobileNo(long mobileNo);
+	
+	public List<User> findByNfcTagData(String nfcTagData);
+	
 }

@@ -10,6 +10,8 @@ public interface IPaymentService extends SuperService {
 	
 	public boolean validateInitiatePaymentRequest(InitiatePaymentModel initiatePaymentModel);
 	
+	public boolean validateInitiatePaymentNFCRequest(InitiatePaymentModel initiatePaymentModel);
+	
 	public boolean validateInitiateNFCPaymentRequest(InitiatePaymentModel initiatePaymentModel);
 
 	public InitiatePaymentResponseModel initiatePayment(InitiatePaymentModel initiatePayment);
